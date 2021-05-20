@@ -135,3 +135,36 @@ Declarations made with `let` will not hoist to the entire scope of the block the
   let bar = 2;
 }
 ```
+
+_let_ => block scope.
+_var_ => function scope.
+
+# Hoisting
+
+We can be tempted to look at `var a = 2;` as one statement, but the JavaScript Engine does not see it that way. It sees `var a` and `a = 2` as two separate statements, the first one a compiler-phase task, and the second one an execution-phase task.
+
+What this leads to is that all declarations in a scope, regardless of where they appear, are processed first before the code itself is executed. You can visualize this as declarations (variables and functions) being "moved" to the top of their respective scopes, which we call "hoisting". Function declarations have more precendence than variable declarations.
+
+Declarations themselves are hoisted, but assignments, even assignments of function expressions, are not hoisted.
+
+# Closure
+
+The function is being invoked well outside of its author-time lexical scope. _Closure_ lets the function continue to access the lexical scope it was defined in at author-time
+
+```js
+function foo() {
+  var a = 2;
+
+  function baz() {
+    console.log(a); // 2
+  }
+
+  bar(baz);
+}
+
+function bar(fn) {
+  fn(); // look ma, I saw closure!
+}
+```
+
+We pass the inner function `baz` over to `bar`, and call that inner function (labeled `fn` now), and when we do, its closure over the inner scope of `foo()` is observed, by accessing `a`.
