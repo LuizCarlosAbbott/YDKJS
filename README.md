@@ -168,3 +168,19 @@ function bar(fn) {
 ```
 
 We pass the inner function `baz` over to `bar`, and call that inner function (labeled `fn` now), and when we do, its closure over the inner scope of `foo()` is observed, by accessing `a`.
+
+## Modules
+
+There are two "requirements" for the `module pattern` to be exercised:
+
+- There must be an outer enclosing function, and it must be invoked at least once (each time creates a new module instance).
+
+- The enclosing function must return back at least one inner function, so that this inner function has closure over the private scope, and can access and/or modify that private state.
+
+An object with a function property on it alone is not really a module. An object which is returned from a function invocation which only has data properties on it and no closured functions is not really a module, in the observable sense.
+
+A slight variation of the `module pattern` is when you only care to have one instance, a `singleton` pattern.
+
+## Closure Review
+
+<b>Closure is when a function can remember and access its lexical scope even when it's invoked outside its lexical scope.</b>
