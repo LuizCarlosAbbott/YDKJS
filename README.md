@@ -184,3 +184,47 @@ A slight variation of the `module pattern` is when you only care to have one ins
 ## Closure Review
 
 <b>Closure is when a function can remember and access its lexical scope even when it's invoked outside its lexical scope.</b>
+
+# This
+
+<b>call-site - </b> is generally: "go locate where a function is called from".
+<b>call-stack - </b>the stack of functions that have been called to get us to the current moment in execution.
+
+```js
+function foo(a, b) {
+  console.log("a:" + a + ", b:" + b);
+}
+
+// spreading out array as parameters
+foo.apply(null, [2, 3]); // a:2, b:3
+```
+
+There's a hidden "danger" in always using null when you don't care about the `this` binding. If you ever use that against a function call (for instance, a third-party library function that you don't control), and that function does make a `this` reference, the default binding rule means it might inadvertently reference (or worse, mutate!) the global object (window in the browser).
+
+Determining the `this` binding for an executing function requires finding the direct call-site of that function. Once examined, four rules can be applied to the call-site, in this order of precedence:
+
+1- Called with `new`? Use the newly constructed object.
+
+2- Called with `call` or `apply` (or `bind`)? Use the specified object.
+
+3- Called with a context object owning the call? Use that context object.
+
+4- Default: `undefined` in `strict mode`, global object otherwise.
+
+Be careful of accidental/unintentional invoking of the default binding rule. In cases where you want to "safely" ignore a this binding, a "DMZ" object like ø = Object.create(null) is a good placeholder value that protects the global object from unintended side-effects.
+
+Instead of the four standard binding rules, ES6 arrow-functions use lexical scoping for `this` binding, which means they adopt the `this` binding (whatever it is) from its enclosing function call. They are essentially a syntactic replacement of `self = this` in pre-ES6 coding.
+
+# Objects
+
+```js
+var myObject = {
+  a: 2,
+};
+
+myObject.a; // 2
+
+myObject["a"]; // 2
+```
+
+To access the value at the location `a` in `myObject`, we need to use either the `.` operator or the `[ ]` operator. The .a syntax is usually referred to as "property" access, whereas the ["a"] syntax is usually referred to as "key" access. In reality, they both access the same location, and will pull out the same value, `2`, so the terms can be used interchangeably.
